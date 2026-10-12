@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>標點符號地下城大冒險 - 國小中年級國語互動遊戲</title>
+  <!-- 引入自訂地下城風格 CSS -->
+  <link rel="stylesheet" href="css/dungeon.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%20%220%22%20%22100%22%20%22100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>">
+</head>
+<body>
+
+  <!-- 遊戲主體容器 -->
+  <div id="game-app">
+
+    <!-- 頂部導航狀態列 -->
+    <header class="top-navbar">
+      <div class="game-title-badge">
+        <span>⚔️</span>
+        <span>標點符號地下城大冒險</span>
+      </div>
+      <div class="nav-buttons">
+        <button id="btn-toggle-sound" class="btn-icon" title="切換音效開關">
+          🔊 音效開
+        </button>
+        <button id="btn-open-leaderboard" class="btn-icon" title="查看勇者榮譽榜">
+          🏆 排行榜
+        </button>
+        <!-- 教師後台入口 (位於開始介面右上角) -->
+        <button id="btn-teacher-entry" class="btn-icon btn-teacher-entry" title="教師專用後台管理">
+          🔒 教師後台
+        </button>
+      </div>
+    </header>
+
+    <!-- 主內容區 -->
+    <main class="dungeon-container">
+
+      <!-- ============================================== -->
+      <!-- 畫面一：開始介面 (歡迎、輸入姓名與關卡導覽) -->
+      <!-- ============================================== -->
+      <section id="screen-start">
+        <div class="start-screen-card">
+          <div class="game-logo-box">
+            <div class="game-logo-icon">🏰🧙‍♂️🗝️</div>
+            <h1 class="game-logo-title">標點符號地下城</h1>
+            <p class="game-logo-subtitle">國小中年級國語科 · 趣味地下城標點闖關冒險</p>
+          </div>
+
+          <!-- 挑戰者姓名輸入欄 -->
+          <div class="student-input-group">
+            <label for="input-student-name" class="student-input-label">
+              🏷️ 挑戰者登記
+            </label>
+            <div class="student-input-hint">
+              💡 提示：請輸入你的「班級 座號 姓名」（例如：四年三班 12號 林小明）
+            </div>
+            <input 
+              type="text" 
+              id="input-student-name" 
+              class="student-input-box" 
+              placeholder="請輸入：班級 座號 姓名..." 
+              maxlength="30"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- 三大關卡介紹 -->
+          <div class="stage-preview-grid">
+            <div class="stage-preview-item">
+              <div class="stage-preview-title">🚩 第一大關：單句句尾</div>
+              <div class="stage-preview-desc">
+                1-1 ~ 1-3 關<br>
+                判斷句子結尾標點<br>
+                ⏱️ 每小關限時 <strong>20秒</strong>
+              </div>
+            </div>
+            <div class="stage-preview-item">
+              <div class="stage-preview-title">⚔️ 第二大關：段落雙格</div>
+              <div class="stage-preview-desc">
+                2-1 ~ 2-3 關<br>
+                選填句中與句尾標點<br>
+                ⏱️ 每小關限時 <strong>40秒</strong>
+              </div>
+            </div>
+            <div class="stage-preview-item">
+              <div class="stage-preview-title">👑 第三大關：短文篇章</div>
+              <div class="stage-preview-desc">
+                3-1 ~ 3-3 關<br>
+                綜合推敲多格標點<br>
+                ⏱️ 每小關限時 <strong>1分鐘</strong>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 15px; color: #ff9f43; font-size: 0.95rem; line-height: 1.5;">
+            ⚠️ 冒險規則：主角有飢餓度，時間跑完就會餓死！推開正確的標點石門才能獲得美味食物補充體力，選錯門會遭遇怪物或陷阱死亡喔！
+          </div>
+
+          <div style="margin-top: 28px;">
+            <button id="btn-start-game" class="btn-primary" style="font-size: 1.3rem; padding: 16px 48px;">
+              🛡️ 踏入地下城，開始挑戰！
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- 畫面二：戰鬥關卡介面 (題目、飢餓度、石門、角色動畫) -->
+      <!-- ============================================== -->
+      <section id="screen-game" style="display: none; flex-direction: column; width: 100%;">
+        
+        <!-- 關卡 HUD 狀態列 -->
+        <div class="stage-hud">
+          <div class="stage-badge">
+            <span id="hud-stage-tag" class="stage-tag">第 1-1 關</span>
+            <span id="hud-stage-name" class="stage-name">第一大關：單句句尾標點</span>
+          </div>
+
+          <!-- 飢餓度計時條 -->
+          <div class="hunger-meter-box">
+            <div class="hunger-label">
+              <span>🍗 飢餓度</span>
+            </div>
+            <div class="hunger-bar-wrapper">
+              <div id="hud-hunger-fill" class="hunger-bar-fill" style="width: 100%;"></div>
+            </div>
+            <div id="hud-hunger-sec" class="hunger-seconds">20s</div>
+          </div>
+        </div>
+
+        <!-- 題目石碑羊皮紙板 -->
+        <div class="question-tablet">
+          <div id="question-passage-text" class="question-passage">
+            題目載入中...
+          </div>
+          <div id="blank-prompt-desc" class="blank-prompt-hint">
+            請選擇對應的標點石門！
+          </div>
+        </div>
+
+        <!-- 地下城動態視覺場景 (火把、4扇石門、地牢地面與勇者) -->
+        <div class="dungeon-stage-visual">
+          <div class="torch-left">🔥</div>
+          <div class="torch-right">🔥</div>
+
+          <!-- 4 扇標點石門 -->
+          <div id="doors-container" class="doors-container">
+            <!-- 由 JS 動態生成 4 扇門 -->
+          </div>
+
+          <!-- 石板地面與勇者角色 -->
+          <div id="dungeon-ground" class="dungeon-ground">
+            <div id="hero-character" class="hero-character">
+              <div class="hero-avatar">🧙‍♂️</div>
+              <div id="hero-name-plate" class="hero-name-plate">小勇士</div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================== -->
+      <!-- 畫面三：通關結算介面 (總用時結算與榮譽榜排名) -->
+      <!-- ============================================== -->
+      <section id="screen-victory" style="display: none; width: 100%;">
+        <!-- 由 JS 動態填入結算卡片內容 -->
+      </section>
+
+    </main>
+
+    <!-- ============================================== -->
+    <!-- 彈窗一：死亡詳解學習卡 Modal (答錯死亡/餓死時彈出) -->
+    <!-- ============================================== -->
+    <div id="death-modal" class="modal-overlay" style="display: none;">
+      <!-- 由 JS 動態產生單格詳解內容 -->
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 彈窗二：排行榜榮譽榜 Modal -->
+    <!-- ============================================== -->
+    <div id="leaderboard-modal" class="modal-overlay" style="display: none;">
+      <!-- 由 JS 動態產生排行榜表格 -->
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 彈窗三：教師後台管理 Modal (密碼解鎖後顯示) -->
+    <!-- ============================================== -->
+    <div id="admin-modal" class="modal-overlay" style="display: none;">
+      <div id="admin-modal-container" class="modal-content" style="max-width: 960px;">
+        <!-- 由 teacher.js 動態產生統計圖表與錯誤報表 -->
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 彈窗四：教師後台密碼輸入 Modal -->
+    <!-- ============================================== -->
+    <div id="password-modal" class="modal-overlay" style="display: none;">
+      <div class="modal-content" style="max-width: 440px; text-align: center;">
+        <button class="modal-close-btn" id="btn-close-pwd-modal">✕</button>
+        <div style="font-size: 3rem; margin-bottom: 12px;">🔒</div>
+        <h3 style="font-size: 1.5rem; color: #ffda79; margin-bottom: 8px;">教師後台權限驗證</h3>
+        <p style="color: #a4b0be; font-size: 0.95rem; margin-bottom: 20px;">
+          請輸入教師專用通關密碼以檢視全體學生作答統計
+        </p>
+        <input 
+          type="password" 
+          id="input-teacher-pwd" 
+          class="student-input-box" 
+          placeholder="請輸入通關密碼..." 
+          style="text-align: center; font-size: 1.3rem; margin-bottom: 16px;"
+          autocomplete="off"
+        />
+        <div id="pwd-error-msg" style="color: #ff4757; font-weight: 700; margin-bottom: 16px; min-height: 24px; display: none;">
+          你不具備權限
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: center;">
+          <button id="btn-submit-pwd" class="btn-primary" style="padding: 12px 30px;">
+            確認進入
+          </button>
+          <button id="btn-cancel-pwd" class="btn-secondary" style="padding: 12px 24px;">
+            取消
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 引入 JavaScript 模組 (純原生免編譯，離線可用) -->
+  <script src="js/audio.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/dungeon-renderer.js"></script>
+  <script src="js/teacher.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
